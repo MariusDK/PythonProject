@@ -14,107 +14,150 @@ def inc_i(i):
 
 class clientPyro4():
     def __init__(self,urlServ):
-        i =0
+
         proxy = Pyro4.Proxy(urlServ)
-        root = Tk()
-        l1 = Label(root, text="Name")
-        l2 = Label(root, text="Locatie")
-        l3 = Label(root, text="Descriere")
-        l4 = Label(root, text="Data")
-        l5 = Label(root, text="Type")
-        e1 = Entry(root)
-        e2 = Entry(root)
-        e3 = Entry(root)
-        e4 = Entry(root)
-        e5 = Entry(root)
+        ans = False
+        print("1. Loagare")
+        print("2. Inregistrare")
 
-        l1.grid(row=0, sticky=E)
-        l2.grid(row=1, sticky=E)
-        l3.grid(row=2, sticky=E)
-        l4.grid(row=3, sticky=E)
-        l5.grid(row=4, sticky=E)
+        a = input("Ce doriti sa alegeti? ")
 
-        e1.grid(row=0, column=1)
-        e2.grid(row=1, column=1)
-        e3.grid(row=2, column=1)
-        e4.grid(row=3, column=1)
-        e4.insert(0, "yyyy-mm-dd")
-        e5.grid(row=4, column=1)
-        if i > 0:
-            def add_ev():
-                name = e1.get()
-                locatie = e2.get()
-                descriere = e3.get()
-                data = e4.get()
-                print(data)
+        if (a == "1"):
+            username = input("Username ")
+            password = input("Password ")
+            id_user = proxy.login(username,password)
+            if id_user!=0:
+                ans = True
+            else:
+                print("Please try again!")
+        elif (a == "2"):
+            name = input("Name ")
+            age = input("Varsta ")
+            email = input("Email ")
+            phone = input("Telefon ")
+            username = input("Username ")
+            password = input("Password ")
+
+            proxy.register(name,age,email,phone,username,password)
+
+        while ans:
+            print(urlServ)
+            print("ping: \t" + proxy.ping())
+            print("""
+            1.Add a Eveniment
+            2.List all eveniments
+            3.Sterge Eveniment
+            4.Actualizeaza Eveniment
+            5.Afisare cronologica dupa data
+            6.Filtrare dupa locatie
+            7.Filtrare dupa data
+            8.Filtrare dupa tip
+            9.Filtrare dupa proprietati
+            
+            x.Exit/Quit
+            """)
+            ans = input("Ce optiune alegeti? ")
+
+            if ans == "1":
+
+
+                name = input("Introduceti denumirea evenimentului ")
+                locatie = input("Introduceti locatia ")
+                descriere = input("Introduceti descrierea ")
+                data = input("Introduceti data format yyyy-mm-dd ")
+                d = datetime.strptime(data , '%Y-%m-%d')
+                dt = datetime.date(d)
+                type = input("Introduceti tipul evenimentului ")
+                proxy.addEveniment(name,locatie,descriere,dt,type,id_user)
+                print("\nEvent Added!")
+            if ans == "2":
+                list = proxy.listEveniments(id_user)
+                for x in list:
+                     print(x)
+            if ans == "3":
+                ras = input("Afisam lista cu evenimente? ")
+                if ras == "da":
+                    for x in proxy.listEveniments(id_user):
+                        print(x)
+
+                id = input("Introduceti id-ul evenimentului: ")
+                proxy.deleteEveniment(id, id_user)
+            if ans == "4":
+                ras = input("Afisam lista cu evenimente?")
+                if ras == "da":
+                    for x in proxy.listEveniments(id_user):
+                        print(x)
+
+                id = input("Introduceti id-ul:")
+                name = input("Introduceti numele")
+                locatie = input("Introduceti locatia")
+                descriere = input("Introduceti descrierea")
+                data = input("Introduceti data format yyyy-mm-dd")
+
                 d = datetime.strptime(data, '%Y-%m-%d')
-                type = e5.get()
-                proxy.addEveniment(name, locatie, descriere, d, type)
-                print("\nEvent Added")
-        button_1 = Button(root, text="Save eveniment", command=inc_i(i))
-        button_1.grid(row=5)
+                dt = datetime.date(d)
+                type = input("Introduceti typul")
 
-        root.mainloop()
+                proxy.updateEveniment(id,name,locatie,descriere,dt,type,id_user)
+                print("Eveniment printed")
 
+            if ans == "5":
+                for x in proxy.listaEvensDupaData(id_user):
+                     print(x)
 
-        # ans = True
-        # while ans:
-        #     print(urlServ)
-        #     print("ping: \t" + proxy.ping())
-        #     print("""
-        #     1.Add a Eveniment
-        #     2.List all eveniments
-        #     4.Exit/Quit
-        #     """)
-        #     ans = input("What would you like to do?")
-        #
-        #     if ans == "1":
-        #
-        #
-        #         name = getData()
-        #         print(name)
-        #         locatie = input("Introduceti locatia")
-        #         descriere = input("Introduceti descrierea")
-        #         data = input("Introduceti data format yyyy-mm-dd")
-        #         print(data)
-        #         d = datetime.strptime(data , '%Y-%m-%d')
-        #         type = input("Introduceti typul")
-        #         proxy.addEveniment(name,locatie,descriere,d,type)
-        #         print("\nEvent Added")
-        #     if ans == "2":
-        #         print(ans)
-        #         proxy.listEveniments()
-        #     if ans == "3":
-        #         proxy
-        #     if ans == "4":
-        #         print("\n Goodbye")
-        #         break
-        #
-        #     elif ans != "":
-        #         print("\n Not Valid Choice Try again")
-        #         break
+            if ans == "6":
+                ras = input("Afisam lista cu evenimente? ")
+                if ras == "da":
+                    for x in proxy.listEveniments(id_user):
+                        print(x)
 
-    # def add_ev():
-    #         name = input("Introduceti numele evenimentului")
-    #         locatie = input("Introduceti locatia")
-    #         descriere = input("Introduceti descrierea")
-    #         data = input("Introduceti data format yyyy-mm-dd")
-    #         print(data)
-    #         d = datetime.strptime(data, '%Y-%m-%d')
-    #         type = input("Introduceti typul")
-    #         proxy.addEveniment(name, locatie, descriere, d, type)
-    #         print("\nEvent Added")
+                locatie = input("Introduceti locatie: ")
+                for x in proxy.listEvensDupaLoc(locatie,id_user):
+                    print(x)
 
-    def add_ev():
-        name = e1.get()
-        locatie = e2.get()
-        descriere = e3.get()
-        data = e4.get()
-        print(data)
-        d = datetime.strptime(data, '%Y-%m-%d')
-        type = e5.get()
-        proxy.addEveniment(name, locatie, descriere, d, type)
-        print("\nEvent Added")
+            if ans == "7":
+                ras = input("Afisam lista cu evenimente? ")
+                if ras == "da":
+                    for x in proxy.listEveniments(id_user):
+                        print(x)
+
+                data = input("Introduceti data format yyyy-mm-dd ")
+
+                d = datetime.strptime(data, '%Y-%m-%d')
+                d2 = datetime.date(d)
+                for x in proxy.filtrareByDate(data,id_user):
+                    print(x)
+
+            if ans == "8":
+                ras = input("Afisam lista cu evenimente?")
+                if ras == "da":
+                    for x in proxy.listEveniments(id_user):
+                        print(x)
+
+                type = input("Introduceti typul: ")
+
+                for x in proxy.filtrareByType(type,id_user):
+                    print(x)
+
+            if ans == "9":
+                ras = input("Afisam lista cu evenimente?")
+                if ras == "da":
+                    for x in proxy.listEveniments(id_user):
+                        print(x)
+
+                prop = input("Introduceti proprietate: ")
+
+                for x in proxy.filtrareByCaracteristici(prop,id_user):
+                    print(x)
+
+            if ans == "x":
+                print("\n Goodbye")
+                break
+
+            elif ((ans != "1") & (ans !="2") & (ans !="3") & (ans !="4") & (ans !="5") & (ans !="6") & (ans !="7") & (ans !="8") & (ans !="9")):
+                print("\n Not Valid Choice Try again!")
+                break
+
 if len(sys.argv) > 1:
     clientPyro4(sys.argv[1])
 else:

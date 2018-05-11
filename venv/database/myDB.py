@@ -1,16 +1,18 @@
 #!/usr/bin/python
 import sqlite3
-from classes import Eveniment
+from classes.Agenda import Eveniment
 
 db = sqlite3.connect('mydb.db',check_same_thread=False)
 
 print("Open database successfully")
 sql_script_create_table = '''CREATE TABLE IF NOT EXISTS users ( 
-                      id INT PRIMARY KEY NOT NULL,
+                      id INTEGER PRIMARY KEY AUTOINCREMENT,
                       name TEXT NOT NULL,
-                      varsta TEXT NOT NULL,
+                      age TEXT NOT NULL,
                       email TEXT NOT NULL,
-                      telefon INTEGER 
+                      telefon INTEGER,
+                      username TEXT UNIQUE NOT NULL, 
+                      password TEXT NOT NULL
                       ); '''
 sql_script_create_table2 = '''CREATE TABLE IF NOT EXISTS agenda(id INTEGER PRIMARY KEY AUTOINCREMENT,
                                          denumire TEXT NULL,
@@ -18,7 +20,7 @@ sql_script_create_table2 = '''CREATE TABLE IF NOT EXISTS agenda(id INTEGER PRIMA
                                          descriere TEXT NULL,
                                          data DATE NULL,
                                          type TEXT NULL,
-                                         id_user INT UNIQUE NULL,
+                                         id_user INTEGER,
                                          FOREIGN KEY(id_user) REFERENCES users(id)
                                          )'''
 c = db.cursor()
@@ -36,49 +38,100 @@ print("Table created successfully");
 #                                          id_user INTEGER FOREIGN KEY UNIQUE
 #                                          )''')
 
-def insert_ev(denumire,locatie,descriere,data,type):
+def insert_ev(denumire,locatie,descriere,data,type,id_user):
     #ev = Eveniment(denumire,locatie,descriere,data,type)
     with db:
-        c.execute('INSERT INTO agenda(denumire,locatie,descriere,data,type) VALUES ( ?, ?, ?, ?, ?)',
-              (denumire,locatie,descriere,data,type))
+        c.execute('INSERT INTO agenda(denumire,locatie,descriere,data,type,id_user) VALUES ( ?, ?, ?, ?, ?, ?)',
+              (denumire,locatie,descriere,data,type,id_user))
         db.commit()
 
-def update_ev(ev):
+def update_ev(id,denumire,locatie,descriere,data,type):
     with db:
-        cursor.execute('''UPDATE agenda 
+        c.execute('''UPDATE agenda 
         SET denumire = ? ,
         locatie = ? ,
         descriere = ? ,
         data = ? ,
         type = ?
-        WHERE id = ?''',(ev.get_denumire(),ev.get_locatie(),ev.get_descriere(),ev.get_data(),ev.get_type(),ev.get_id()))
+        WHERE id = ?''',(denumire,locatie,descriere,data,type,id))
         db.commit()
 
-def delete_ev(ev):
+def delete_ev(id):
     with db:
-        cursor.execute('''DELETE FROM agenda WHERE id = ?''',(ev.get_id))
+        c.execute('''DELETE FROM agenda WHERE id = ?''',(id))
         db.commit()
 
-def get_cronological_list():
+def get_cronological_list(idUser):
+    list=[]
     with db:
-        cursor.execute('''SELECT * FROM agenda ORDER BY DATE(data) DESC LIMIT 1''')
-        return cursor.fetchall()
+        c.execute('''SELECT * FROM agenda WHERE id_user = ? ORDER BY DATE(data) DESC''',(idUser,))
+        rows = c.fetchall()
+        for row in rows:
+            print(row[0])
+            e = Eveniment(row[1], row[3], row[2], row[4], row[5], row[0],row[6])
+            list.append(e)
+    return list
 
 def flitrare_type(type):
     with db:
         cursor.execute('''SELECT * FROM agenda WHERE type = ?''',type)
         return cursor.fetchall()
-def filtrare_locatie(locatie):
+def filtrare_locatie(locatie,idUser):
+    list = []
     with db:
-        cursor.execute('''SELECT * FROM agenda WHERE locatie = ?''', locatie)
-        return cursor.fetchall()
-def filtrare_data(data):
-    with db:
-        cursor.execute('''SELECT * FROM agenda WHERE data = ?''',data)
-        return cursor.fetchall()
-def get_all():
-    with db:
-        c.execute('''SELECT * FROM agenda ''')
+        c.execute('''SELECT * FROM agenda WHERE locatie = ? AND id_user = ? ''', (locatie,idUser))
         rows = c.fetchall()
         for row in rows:
-            print (row[0], row[1])
+            e = Eveniment(row[1], row[3], row[2], row[4], row[5], row[0],row[6])
+            list.append(e)
+    return list
+
+
+def filtrare_data(data):
+    list = []
+    with db:
+        c.execute('''SELECT * FROM agenda WHERE data = ?''',data)
+        rows = c.fetchall()
+        for row in rows:
+
+            e = Eveniment(row[1], row[3], row[2], row[4], row[5], row[0], row[6])
+            list.append(e)
+    return list
+def get_all(idUser):
+
+    list = []
+    with db:
+        print(idUser)
+        c.execute('''SELECT * FROM agenda WHERE id_user = ?''',(idUser,))
+        print(2)
+        rows = c.fetchall()
+
+        for row in rows:
+            e = Eveniment(row[1], row[3], row[2], row[4], row[5], row[0],row[6])
+            list.append(e)
+    return list
+
+def get_one(id):
+    with db:
+        c.execute('''SELECT * FROM agenda WHERE id = ?''',id)
+        row = c.fetchone()
+        e = Eveniment(row[1],row[3],row[2],row[4],row[5],row[0],row[6])
+        return e
+
+def login(username,password):
+
+    with db:
+        c.execute('''SELECT * FROM users WHERE username=? and password=?''',(username,password))
+        row = c.fetchone()
+
+    if (row==None):
+        return 0
+    else:
+        return row[0]
+
+
+def register(name,age,email,phone,username,password):
+    with db:
+        c.execute('INSERT INTO users(name,age,email,telefon,username,password) VALUES ( ?, ?, ?, ?, ?, ?)',
+                  (name, age, email, phone, username, password))
+        db.commit()
