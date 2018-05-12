@@ -1,41 +1,42 @@
-import Pyro4
+import Pyro.core
 import sys
 import cgi
 from datetime import datetime
-from tkinter import *
 
-class clientPyro4():
-    def __init__(self,urlServ):
 
-        proxy = Pyro4.Proxy(urlServ)
+class clientPyro3():
+    def __init__(self, urlServ):
+
+        Pyro.core.initClient()
+        proxy = Pyro.core.getProxyForURI(urlServ)
         ans = False
-        print("1. Loagare")
-        print("2. Inregistrare")
+        print "1. Loagare"
+        print "2. Inregistrare"
 
-        a = input("Ce doriti sa alegeti? ")
+        a = raw_input("Ce doriti sa alegeti? ")
 
         if (a == "1"):
-            username = input("Username ")
-            password = input("Password ")
+            username = raw_input("Username ")
+            password = raw_input("Password ")
             id_user = proxy.login(username,password)
             if id_user!=0:
                 ans = True
             else:
-                print("Please try again!")
+                print "Please try again!"
         elif (a == "2"):
-            name = input("Name ")
-            age = input("Varsta ")
-            email = input("Email ")
-            phone = input("Telefon ")
-            username = input("Username ")
-            password = input("Password ")
+            name = raw_input("Name ")
+            age = raw_input("Varsta ")
+            email = raw_input("Email ")
+            phone = raw_input("Telefon ")
+            username = raw_input("Username ")
+            password = raw_input("Password ")
 
             proxy.register(name,age,email,phone,username,password)
 
         while ans:
             print(urlServ)
             print("ping: \t" + proxy.ping())
-            print("""
+            print """
             1.Add a Eveniment
             2.List all eveniments
             3.Sterge Eveniment
@@ -47,7 +48,7 @@ class clientPyro4():
             9.Filtrare dupa proprietati
             
             x.Exit/Quit
-            """)
+            """
             ans = input("Ce optiune alegeti? ")
 
             if ans == "1":
@@ -91,7 +92,7 @@ class clientPyro4():
                 type = input("Introduceti typul")
 
                 proxy.updateEveniment(id,name,locatie,descriere,dt,type,id_user)
-                print("Eveniment printed")
+                print "Eveniment printed"
 
             if ans == "5":
                 for x in proxy.listaEvensDupaData(id_user):
@@ -143,7 +144,7 @@ class clientPyro4():
                     print(x)
 
             if ans == "x":
-                print("\n Goodbye")
+                print "\n Goodbye"
                 break
 
             elif ((ans != "1") & (ans !="2") & (ans !="3") & (ans !="4") & (ans !="5") & (ans !="6") & (ans !="7") & (ans !="8") & (ans !="9")):
@@ -151,7 +152,6 @@ class clientPyro4():
                 break
 
 if len(sys.argv) > 1:
-    clientPyro4(sys.argv[1])
+    clientPyro3(sys.argv[1])
 else:
-    clientPyro4("PYRO:exec@localhost:7543")
-
+    clientPyro3("PYROLOC://localhost:7766/exec")

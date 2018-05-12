@@ -1,10 +1,11 @@
-import Pyro4
+import Pyro.core
 import socket
-from database import myDB
-from classes import Agenda
+import Agenda
+import myDB
 
-@Pyro4.expose
-class serverPyro4(object):
+class serverPyro3(Pyro.core.ObjBase):
+    def __init__(self):
+        Pyro.core.ObjBase.__init__(self)
     def ping(self):
         name = socket.gethostname()
         ip = socket.gethostbyname(name)
@@ -12,7 +13,7 @@ class serverPyro4(object):
     def addEveniment(self,denumire,locatie,descriere,data,type,id_user):
 
         myDB.insert_ev(denumire,locatie,descriere,data,type, id_user)
-        print("Succesful operation")
+        print "Succesful operation"
     def listEveniments(self,id_user):
         #myDB.get_all()
         listS = []
@@ -21,19 +22,19 @@ class serverPyro4(object):
             listS.append(str(x))
             #print(str(x))
         return listS
-    def deleteEveniment(self, id, id_user):
+    def deleteEveniment(self,id, id_user):
         if (myDB.get_one(id).get_idUser() == id_user):
             myDB.delete_ev(id)
-            print("Succesful operation")
+            print "Succesful operation"
         else:
-            print("Nu aveti autorizatie asupra evenimentului")
+            print "Nu aveti autorizatie asupra evenimentului"
 
     def updateEveniment(self,id,denumire,locatie,descriere,data,type,id_user):
         if (myDB.get_one(id).get_idUser() == id_user):
             myDB.update_ev(id,denumire,locatie,descriere,data,type)
-            print("Succesful operation")
+            print "Succesful operation"
         else:
-            print("Nu aveti autorizatie asupra evenimentului")
+            print "Nu aveti autorizatie asupra evenimentului"
 
     def eveniment(self,id,id_user):
         return str(myDB.get_one(id))
@@ -87,7 +88,9 @@ class serverPyro4(object):
 
     def register(self, name, age, email, phone, username, password):
         myDB.register(name, age, email, phone, username, password)
-daemon = Pyro4.Daemon(port = 7543)
-uri = daemon.register(serverPyro4(),"exec")
-print("Python ExecPyro4 waiting at: ",uri)
+
+Pyro.core.initServer()
+daemon = Pyro.core.Daemon()
+uri = daemon.connect(serverPyro3(), "exec")
+print "Python Exec Pyro3 waiting with name \"exec\" at: " + `uri`
 daemon.requestLoop()

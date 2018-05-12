@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import sqlite3
-from classes.Agenda import Eveniment
+import Agenda
 
 db = sqlite3.connect('mydb.db',check_same_thread=False)
 
