@@ -49,18 +49,18 @@ class clientPyro3():
             
             x.Exit/Quit
             """
-            ans = input("Ce optiune alegeti? ")
+            ans = raw_input("Ce optiune alegeti? ")
 
             if ans == "1":
 
 
-                name = input("Introduceti denumirea evenimentului ")
-                locatie = input("Introduceti locatia ")
-                descriere = input("Introduceti descrierea ")
-                data = input("Introduceti data format yyyy-mm-dd ")
+                name = raw_input("Introduceti denumirea evenimentului ")
+                locatie = raw_input("Introduceti locatia ")
+                descriere = raw_input("Introduceti descrierea ")
+                data = raw_input("Introduceti data format yyyy-mm-dd ")
                 d = datetime.strptime(data , '%Y-%m-%d')
                 dt = datetime.date(d)
-                type = input("Introduceti tipul evenimentului ")
+                type = raw_input("Introduceti tipul evenimentului ")
                 proxy.addEveniment(name,locatie,descriere,dt,type,id_user)
                 print("\nEvent Added!")
             if ans == "2":
@@ -68,28 +68,28 @@ class clientPyro3():
                 for x in list:
                      print(x)
             if ans == "3":
-                ras = input("Afisam lista cu evenimente? ")
+                ras = raw_input("Afisam lista cu evenimente? ")
                 if ras == "da":
                     for x in proxy.listEveniments(id_user):
                         print(x)
 
-                id = input("Introduceti id-ul evenimentului: ")
+                id = raw_input("Introduceti id-ul evenimentului: ")
                 proxy.deleteEveniment(id, id_user)
             if ans == "4":
-                ras = input("Afisam lista cu evenimente?")
+                ras = raw_input("Afisam lista cu evenimente?")
                 if ras == "da":
                     for x in proxy.listEveniments(id_user):
                         print(x)
 
-                id = input("Introduceti id-ul:")
-                name = input("Introduceti numele")
-                locatie = input("Introduceti locatia")
-                descriere = input("Introduceti descrierea")
-                data = input("Introduceti data format yyyy-mm-dd")
+                id = raw_input("Introduceti id-ul:")
+                name = raw_input("Introduceti numele")
+                locatie = raw_input("Introduceti locatia")
+                descriere = raw_input("Introduceti descrierea")
+                data = raw_input("Introduceti data format yyyy-mm-dd")
 
                 d = datetime.strptime(data, '%Y-%m-%d')
                 dt = datetime.date(d)
-                type = input("Introduceti typul")
+                type = raw_input("Introduceti typul")
 
                 proxy.updateEveniment(id,name,locatie,descriere,dt,type,id_user)
                 print "Eveniment printed"
@@ -99,22 +99,22 @@ class clientPyro3():
                      print(x)
 
             if ans == "6":
-                ras = input("Afisam lista cu evenimente? ")
+                ras = raw_input("Afisam lista cu evenimente? ")
                 if ras == "da":
                     for x in proxy.listEveniments(id_user):
                         print(x)
 
-                locatie = input("Introduceti locatie: ")
+                locatie = raw_input("Introduceti locatie: ")
                 for x in proxy.listEvensDupaLoc(locatie,id_user):
                     print(x)
 
             if ans == "7":
-                ras = input("Afisam lista cu evenimente? ")
+                ras = raw_input("Afisam lista cu evenimente? ")
                 if ras == "da":
                     for x in proxy.listEveniments(id_user):
                         print(x)
 
-                data = input("Introduceti data format yyyy-mm-dd ")
+                data = raw_input("Introduceti data format yyyy-mm-dd ")
 
                 d = datetime.strptime(data, '%Y-%m-%d')
                 d2 = datetime.date(d)
@@ -122,23 +122,23 @@ class clientPyro3():
                     print(x)
 
             if ans == "8":
-                ras = input("Afisam lista cu evenimente?")
+                ras = raw_input("Afisam lista cu evenimente?")
                 if ras == "da":
                     for x in proxy.listEveniments(id_user):
                         print(x)
 
-                type = input("Introduceti typul: ")
+                type = raw_input("Introduceti typul: ")
 
                 for x in proxy.filtrareByType(type,id_user):
                     print(x)
 
             if ans == "9":
-                ras = input("Afisam lista cu evenimente?")
+                ras = raw_input("Afisam lista cu evenimente?")
                 if ras == "da":
                     for x in proxy.listEveniments(id_user):
                         print(x)
 
-                prop = input("Introduceti proprietate: ")
+                prop = raw_input("Introduceti proprietate: ")
 
                 for x in proxy.filtrareByCaracteristici(prop,id_user):
                     print(x)

@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import sqlite3
-import Agenda
+from Agenda import Eveniment
 
-db = sqlite3.connect('mydb.db',check_same_thread=False)
+db = sqlite3.connect('C:\\Users\\MariusDK\\PycharmProjects\\PythonProject\\venv\\database\\db',check_same_thread=False)
 
 print("Open database successfully")
 sql_script_create_table = '''CREATE TABLE IF NOT EXISTS users ( 

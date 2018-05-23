@@ -1,6 +1,7 @@
+#!/usr/bin/python
 import Pyro.core
 import socket
-import Agenda
+from Agenda import Eveniment
 import myDB
 
 class serverPyro3(Pyro.core.ObjBase):

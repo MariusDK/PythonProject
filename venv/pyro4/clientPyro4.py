@@ -2,7 +2,7 @@ import Pyro4
 import sys
 import cgi
 from datetime import datetime
-from tkinter import *
+
 
 class clientPyro4():
     def __init__(self,urlServ):
